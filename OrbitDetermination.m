@@ -26,18 +26,18 @@
 % 
 % -------------------------------------------------------------------------
 
-function [r0, v0, oe0, rf, vf, oef] = OrbitDetermination(lat,lst,rho,ra,dec,JD, TOF)
+function [r0, v0, oe0, rf, vf, oef] = OrbitDetermination(lat,lst,rho,ra,dec,JD,TOF)
 
 mu= 3.986004254*10^5    %           Earth's Gravitational Constant
 RE = 6378.137;          % km         Earth Radius
 
 alt = 2;
 
-%T1 = (JD(1,1)-JD(2,1))*60*60
-%T3 = (JD(3,1)-JD(2,1))*60*60
+T1 = (JD(1,1)-JD(2,1))*24*60*60
+T3 = (JD(3,1)-JD(2,1))*24*60*60
 
-T1 = -8*60 %sec
-T3 =  4*60 %sec
+%T1 = -8*60 %sec
+%T3 =  4*60 %sec
 
 %Line of site Unit Vectors
 for i = 1:3
