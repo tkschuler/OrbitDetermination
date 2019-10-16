@@ -1,0 +1,25 @@
+
+lat = 40        %degrees
+lon = -110      %degrees
+alt = 2         %km
+
+%Observations
+JD(1,1) = juliandate(datetime('2012-08-20 11:40:28'));
+JD(2,1) = juliandate(datetime('2012-08-20 11:48:28'));
+JD(3,1) = juliandate(datetime('2012-08-20 11:52:28'));
+
+ra(1,1) = 0.939913;
+ra(2,1) = 45.025748;
+ra(3,1) = 67.886655;
+
+dec(1,1) = 18.667717;
+dec(2,1) = 35.664741;
+dec(3,1) = 36.996583;
+
+for i = 1:size(Obs,1)
+    L(i,1) = cosd(Obs(i,2))*cosd(Obs(i,1));
+    L(i,2) = cosd(Obs(i,2))*sind(Obs(i,1));
+    L(i,3) = sind(Obs(i,2));
+end
+
+[r0, v0, oeo, rf, vf, oef] = OrbitDetermination(lat,lst,rho,ra,dec,JD, TOF)

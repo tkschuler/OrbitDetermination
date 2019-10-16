@@ -1,3 +1,24 @@
+%--------------------------------------------------------------------------
+%
+%  GIBBS.m
+%
+%  this function uses Gibbs method to determine velocity of sattelite
+%  given 3 observations that are "close"
+% 
+%  inputs:
+%    r1       - 3x1 vector of ijk position of first observation             km
+%    r2       - 3x1 vector of ijk position of second observation            km
+%    r3       - 3x1 vector of ijk position of third observation             km
+%
+%  outputs:
+%    v2       - 3x1 vector of ijk velocity of second observation            km/s
+%
+%
+% Last modified:   10/15/2019   T. Schuler
+% 
+% -------------------------------------------------------------------------
+
+
 function v2 = GIBBS(r1,r2,r3)
 
 mu= 3.986004254*10^5 %Earth's Gravitational Constant

@@ -6,16 +6,26 @@
 %  time given a julian date and longitude
 % 
 %  inputs:
-%    JD       - Julian Date
-%    lon      - longitude                       deg
+%    JD       - Julian Date                                    deg
+%    lon      - longitude     deg
+%    rho      - 3x1 site vector in ECEF                                     km
+%    ra       - 3x1 vector of right ascension observations                  deg
+%    dec      - 3x1 vector of declanation observations                      deg
+%    JD       - 3x1 vector of Julian Date observations  
+%    TOF      - 
 %
 %  outputs:
-%    GST      - Greenwich Standard Time         deg
-%    LST      - Local Siderial Time             deg
+%    r0       - 3x1 vector of intial postion of satellite in ECI            km
+%    v0       - 3x1 vector of intial velocity of satellite in ECI           km/s
+%    oe0      - 6x1 vector of intial classical orbital elements
+%    rf       - 3x1 vector of final postion of satellite in ECI             km
+%    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
+%    oef      - 6x1 vector of final classical orbital elements
 %
 % Last modified:   10/15/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
+
 
 function [GST, LST] = siderial_time(JD,lon)
 
