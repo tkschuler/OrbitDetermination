@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 %
-%  OrbitDetermination.m
+%  GaussAngles.m
 %
 %  this function uses the Gauss angles only method to find the kepelerian
 %  elements of the orbit
@@ -12,7 +12,7 @@
 %    ra       - 3x1 vector of right ascension observations                  deg
 %    dec      - 3x1 vector of declanation observations                      deg
 %    JD       - 3x1 vector of Julian Date observations  
-%    TOF      - 
+%    TOF      - Time of Flight                                              min???????????????
 %
 %  outputs:
 %    r0       - 3x1 vector of intial postion of satellite in ECI            km
@@ -22,11 +22,11 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/15/2019   T. Schuler
+% Last modified:   10/17/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
-function [r0, v0, oe0, rf, vf, oef] = OrbitDetermination(lat,lst,rho,ra,dec,JD,TOF)
+function [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,rho,ra,dec,JD,TOF)
 
 mu= 3.986004254*10^5    %           Earth's Gravitational Constant
 RE = 6378.137;          % km         Earth Radius
@@ -110,8 +110,24 @@ v0 = v2;
 [a,e,i,Omega,omega,f] = OrbitalElements(r2,v2);
 oe0 = [a; e; i; Omega; omega; f];
 
+%How to iterate???
+%{
+while (abs(F) > 1*10^-9)
+    F = E2-e*sin(E2)-M2; %Eq. 4.51 to test if E2 is a solution (or root)
+    G = 1-e*cos(E2); %Derrivative of F
+    E2 = E2 -(F/G); %Newton's Method
+    
+    f1 = 1-
+    
+    fprintf('No. of Iterations : %d\n',i);
+    i= i+1;
+end
+%}
+
+
 %TO DO ...
 rf = 1;
 vf =1;
 oef = 1;
+
 end

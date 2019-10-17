@@ -10,7 +10,7 @@
 %   -Add TOF functionality
 %   -Do the same method for Laplace and see if we get the same solutions
 %
-% Last modified:   10/15/2019   T. Schuler
+% Last modified:   10/17/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -21,6 +21,8 @@ clear;
 clc;
 
 %% Observations
+
+% Example from Rosengren's Slides:
 
 lat = 40        %degrees
 lon = -110      %degrees
@@ -56,4 +58,4 @@ TOF = 5 %time of flight
 
 %% Orbit Determination
 
-[r0, v0, oe0, rf, vf, oef] = OrbitDetermination(lat,lst,rho,ra,dec,JD,TOF)
+[r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,rho,ra,dec,JD,TOF)
