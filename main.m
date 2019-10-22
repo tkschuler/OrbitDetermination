@@ -99,7 +99,7 @@ alt = 0.757         	%km
 
 lla = [lat lon alt];
 %rho = lla2ecef(lla);
-rho = [(Re+alt)*cosd(lat)*cosd(lon) (Re+alt)*cosd(lat)*sind(lon) (Re+alt)sind(lon)]'
+rho = [(Re+alt)*cosd(lat)*cosd(lon) (Re+alt)*cosd(lat)*sind(lon) (Re+alt)*sind(lon)]'
 rho = rho'/1000 
 
 
