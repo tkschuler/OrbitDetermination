@@ -6,13 +6,14 @@
 %  elements of the orbit
 % 
 %  inputs:
-%    lat      - latitude of observation                                     deg
+%    lat      - latitude of site observation                                deg
 %    lst      - 3x1 Local Siderial Time for Each Julian Date Observation    deg
+%    alt      - altitude of site observation                                km
 %    rho      - 3x1 site vector in ECEF                                     km
 %    ra       - 3x1 vector of right ascension observations                  deg
 %    dec      - 3x1 vector of declanation observations                      deg
 %    JD       - 3x1 vector of Julian Date observations  
-%    TOF      - Time of Flight                                              min
+%    JD_prop  - Future Julian Date to propagate orbit to    
 %
 %  outputs:
 %    r0       - 3x1 vector of intial postion of satellite in ECI            km
@@ -26,12 +27,11 @@
 % 
 % -------------------------------------------------------------------------
 
-function [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,rho,ra,dec,JD,TOF)
+function [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,alt,rho,ra,dec,JD,JD_Prop)
 
-mu= 3.986004254*10^5    %           Earth's Gravitational Constant
-RE = 6378.137;          % km         Earth Radius
-
-alt = 2;
+mu=  398600.4354             % km^3/s^2  Earth's Gravitational Constant
+RE = 6378.1366;              % km        Earth Radius
+omega_E = 7.2921159e-5       % rad/s     Earth's intertial Rotation Rate
 
 T1 = (JD(1,1)-JD(2,1))*24*60*60
 T3 = (JD(3,1)-JD(2,1))*24*60*60
@@ -129,7 +129,7 @@ end
 
 %% Orbit Determination
 t0 = JD(2,1)
-tf = t0 + TOF
+tf = JD_Prop
 
 [rf, vf, oef] = OrbitPropagation(r0, v0, t0, tf)
 

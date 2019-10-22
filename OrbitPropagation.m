@@ -35,9 +35,9 @@ time_span = [t0:dt:tf];
 mu= 3.986004254*10^5;    %           Earth's Gravitational Constant
 RE = 6378.137;           % km         Earth Radius
 
-ICs = horzcat(r0',v0')'
+ICs = horzcat(r0',v0')';
 
-tolerance = 1e-12
+tolerance = 1e-12;
 
 options = odeset('RelTol',tolerance,'AbsTol',tolerance);
 
