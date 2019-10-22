@@ -12,7 +12,7 @@
 %    ra       - 3x1 vector of right ascension observations                  deg
 %    dec      - 3x1 vector of declanation observations                      deg
 %    JD       - 3x1 vector of Julian Date observations  
-%    TOF      - Time of Flight                                              min???????????????
+%    TOF      - Time of Flight                                              min
 %
 %  outputs:
 %    r0       - 3x1 vector of intial postion of satellite in ECI            km
@@ -22,7 +22,7 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/17/2019   T. Schuler
+% Last modified:   10/21/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -98,17 +98,17 @@ r3 = rho(3,1)*L(:,3)+rsite_eci(:,3)
 
 r = [r1 r2 r3]'
 
-%Use Gibbs method to solve for velocity
+%% Use Gibbs method to solve for velocity
 v2 = GIBBS(r1,r2,r3)
 
-% Final Values
-% -----------------------------------------------------------------
 r0 = r2;
 v0 = v2;
 
-% Determine classical orbital elements of this orbit
+%% Determine classical orbital elements of this orbit
 [a,e,i,Omega,omega,f] = OrbitalElements(r2,v2);
 oe0 = [a; e; i; Omega; omega; f];
+
+%% Iterate to get better solution
 
 %How to iterate???
 %{
@@ -126,8 +126,12 @@ end
 
 
 %TO DO ...
-rf = 1;
-vf =1;
-oef = 1;
+
+%% Orbit Determination
+t0 = JD(2,1)
+tf = t0 + TOF
+
+[rf, vf, oef] = OrbitPropagation(r0, v0, t0, tf)
+
 
 end
