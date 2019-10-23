@@ -23,7 +23,7 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/21/2019   T. Schuler
+% Last modified:   10/22/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -109,6 +109,23 @@ v0 = v2;
 oe0 = [a; e; i; Omega; omega; f];
 
 %% Iterate to get better solution
+
+h= norm(cross(r2,v2));
+p = h^2/mu
+
+%f1 = 1-r1/p(1-cos(
+
+df12 = acosd(dot(r1,r2)/(norm(r1)*norm(r2)))
+df32 = acosd(dot(r2,r3)/(norm(r2)*norm(r3)))
+
+f1 = 1-(norm(r1)/p)*(1-cosd(df12))
+f3 = 1-(norm(r3)/p)*(1-cosd(df32))
+
+g1= (norm(r1)*norm(r2)*sind(df12))/(sqrt(mu*p))
+g3= (norm(r3)*norm(r2)*sind(df32))/(sqrt(mu*p))
+
+c1 = g3/(f1*g3-f3*g1)
+c3 = -g1/(f1*g3-f3*g1)
 
 %How to iterate???
 %{

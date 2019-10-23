@@ -10,7 +10,7 @@
 %   -Add TOF functionality
 %   -Do the same method for Laplace and see if we get the same solutions
 %
-% Last modified:   10/21/2019   T. Schuler
+% Last modified:   10/22/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -107,6 +107,7 @@ rho = rho'/1000
 JD_Prop = 2454873.2055555555; %Final Julian Date to Propagate to
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
+%{
 OrbitViz(r0,v0)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_C,alt,rho,ra_C,dec_C,JD_C,JD_Prop)
@@ -186,6 +187,6 @@ title('3 Sigma Distribution of Two Overlapping Orbits')
 
 %Better for Visualization
 axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
-
+%}
 
 
