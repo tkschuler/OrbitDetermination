@@ -66,7 +66,7 @@ a3 = -T1/(T3-T1)
 a1u = (T3*((T3-T1)^2-T3^2))/(6*(T3-T1))
 a3u = (-T1*((T3-T1)^2-T1^2))/(6*(T3-T1))
 
-% Determine Parameters for use in eith-degree equation
+% Determine Parameters for use in eigth-degree equation
 M = inv(L)*rsite_eci;
 
 d1 = M(2,1)*a1-M(2,2)+M(2,3)*a3 %km
