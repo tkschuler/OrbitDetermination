@@ -97,7 +97,7 @@ lat = 32.2227       	%degrees
 lon = -110.0101     	%degrees
 alt = 0.757         	%km
 
-lla = [lat lon alt];
+%lla = [lat lon alt];
 %rho = lla2ecef(lla);
 rho = [(Re+alt)*cosd(lat)*cosd(lon) (Re+alt)*cosd(lat)*sind(lon) (Re+alt)*sind(lon)]
 rho = rho'/1000 
@@ -126,27 +126,25 @@ figure(2)
 t0 = JD_I(2,1)
 tf = JD_Prop
 
-r_min = -2.0;
-r_max = 2.0;
-n = 100;
-r_error = r_min+rand(1,n)*(r_max-r_min)
-
-v_min = -2.0;
-v_max = 2.0;
-n = 100;
-v_error = v_min+rand(1,n)*(v_max-v_min)
     
 for i = 1:100
-    [rf, vf, oef] = OrbitPropagation(r0*r_error(i),v0*v_error(i),t0,tf);
+    r_min = -2.0;
+    r_max = 2.0;
+    n = 3;
+    r_error = r_min+rand(1,n)*(r_max-r_min)
+    
+    v_min = -2.0;
+    v_max = 2.0;
+    n = 3;
+    v_error = v_min+rand(1,n)*(v_max-v_min)
+    
+    [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
     
     fprintf('I Error point calculation: %i.\n', i);
     
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
-    xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
     hold on
-    grid on
+    %grid on
 end
 
 %% C- Group
@@ -156,28 +154,38 @@ end
 t0 = JD_C(2,1)
 tf = JD_Prop
 
-r_min = -2.0;
-r_max = 2.0;
-n = 100;
-r_error = r_min+rand(1,n)*(r_max-r_min)
-
-v_min = -2.0;
-v_max = 2.0;
-n = 100;
-v_error = v_min+rand(1,n)*(v_max-v_min)
-    
 for i = 1:100
-    [rf, vf, oef] = OrbitPropagation(r0*r_error(i),v0*v_error(i),t0,tf);
+    
+    r_min = -2.0;
+    r_max = 2.0;
+    n = 3;
+    r_error = r_min+rand(1,n)*(r_max-r_min)
+    
+    v_min = -2.0;
+    v_max = 2.0;
+    n = 3;
+    v_error = v_min+rand(1,n)*(v_max-v_min)
+    
+    [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
     
     fprintf('C Error point calculation: %i.\n', i);
     
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
-    xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
     hold on
     grid on
+    
 end
+
+
+%Why is the legend not doing the right color?
+legend([{'I-Orbit'},{'C-Orbit'}])
+xlabel('I distance (km)')
+ylabel('J distance (km)')
+zlabel('K distance (km)')
+title('3 Sigma Distribution of Two Overlapping Orbits')
+
+%Better for Visualization
+axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
 
 
 
