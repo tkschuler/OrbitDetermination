@@ -107,12 +107,44 @@ rho = rho'/1000
 JD_Prop = 2454873.2055555555; %Final Julian Date to Propagate to
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
+dt = datetime(JD_I(2,1),'convertfrom','juliandate')
+[Y,M,D] = ymd(dt);
+[h,m,s] = hms(dt);
+utc1 = [Y M D h m s]
+o1_I = eci2lla(r0',utc1)
+
+dt2 = datetime(JD_Prop,'convertfrom','juliandate')
+[Y,M,D] = ymd(dt2);
+[h,m,s] = hms(dt2);
+utc2 = [Y M D h m s]
+o2_I = eci2lla(rf',utc2)
+
 
 OrbitViz(r0,v0)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_C,alt,rho,ra_C,dec_C,JD_C,JD_Prop)
 
+dt = datetime(JD_C(2,1),'convertfrom','juliandate')
+[Y,M,D] = ymd(dt);
+[h,m,s] = hms(dt);
+utc1 = [Y M D h m s]
+o1_C = eci2lla(r0',utc1)
+
+dt2 = datetime(JD_Prop,'convertfrom','juliandate')
+[Y,M,D] = ymd(dt2);
+[h,m,s] = hms(dt2);
+utc2 = [Y M D h m s]
+o2_C = eci2lla(rf',utc2)
+
 OrbitViz(r0,v0)
+
+figure(2)
+geoplot([lat],[lon],'r*')
+hold on
+geoplot([o1_I(1) o2_I(1)],[o1_I(2) o2_I(2)],'g-*')
+hold on
+geoplot([o1_C(1) o2_C(1)],[o1_C(2) o2_C(2)],'b-*')
+hold off
 
 
 %% Gauss Distribution
@@ -120,7 +152,7 @@ OrbitViz(r0,v0)
 %Do you guys have a better way to do this?
 
 %Add Normal Distribution to computer possible errors
-figure(2)
+figure(3)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
@@ -186,10 +218,37 @@ title('3 Sigma Distribution of Two Overlapping Orbits')
 
 %Better for Visualization
 axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
+hold off
 
 
 %%
 %[r0, v0, oe0, rf, vf, oef] = LaplaceAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
 
+%% Site Visualization
 
+%{
+states = geoshape(shaperead('usastatehi', 'UseGeoCoords', true));
+oceanColor = [.5 .7 .9];
+
+%This won't work if you don't have the mapping toolbox
+stateName = 'Arizona';
+ma = states(strcmp(states.Name, stateName));
+
+figure
+ax = usamap('az');
+setm(ax, 'FFaceColor', oceanColor)
+geoshow(states)
+geoshow(ma, 'LineWidth', 1.5, 'FaceColor', [.5 .8 .6])
+%geoshow(placenames);
+%geoshow(route.Latitude, route.Longitude);
+geoshow(32.2226,-110.9747)
+title({'Arizona and Surrounding Region', 'Placenames and Route'})
+
+figure
+latSeattle = 47.62;
+lonSeattle = -122.33;
+latAnchorage = 61.20;
+lonAnchorage = -149.9;
+
+%}

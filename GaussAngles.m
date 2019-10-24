@@ -143,5 +143,36 @@ tf = JD_Prop
 
 [rf, vf, oef] = OrbitPropagation(r0, v0, t0, tf)
 
+%% Visualization 
+%{
+figure
+dt = datetime(JD(1,1),'convertfrom','juliandate')
+[Y,M,D] = ymd(dt);
+[h,m,s] = hms(dt);
+utc1 = [Y M D h m s]
+o1 = eci2lla(rsite_eci(:,1)',utc1)
 
+
+dt2 = datetime(JD(2,1),'convertfrom','juliandate')
+[Y,M,D] = ymd(dt2);
+[h,m,s] = hms(dt2);
+utc2 = [Y M D h m s]
+o2 = eci2lla(rsite_eci(:,2)',utc2)
+
+dt3 = datetime(JD(3,1),'convertfrom','juliandate')
+[Y,M,D] = ymd(dt3);
+[h,m,s] = hms(dt3);
+utc3 = [Y M D h m s]
+o3 = eci2lla(rsite_eci(:,3)',utc3)
+
+%Site Location
+geoplot([lat],[-110],'r*')
+hold on
+geoplot([o1(1) o2(1) o3(1)],[o1(2) o2(2) o3(2)],'g*')
+hold on
+geoplot([lat lat lat],[lst(1)-360 lst(2)-360 lst(3)-360],'b-*')
+hold off
+geolimits([45 62],[-180 180])
+
+%}
 end
