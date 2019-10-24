@@ -175,7 +175,7 @@ for i = 1:100
     n = 3;
     v_error = v_min+rand(1,n)*(v_max-v_min);
     
-    [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
+    [rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     
     RI(:,i)=rf;
     
@@ -183,6 +183,7 @@ for i = 1:100
     hold on
     %grid on
 end
+
 
 %% C- Group
 
@@ -205,7 +206,7 @@ for i = 1:100
     n = 3;
     v_error = v_min+rand(1,n)*(v_max-v_min);
     
-    [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
+    [rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     
     RC(:,i)=rf;
     
@@ -224,7 +225,7 @@ zlabel('K distance (km)')
 title('3 Sigma Distribution of Two Overlapping Orbits')
 
 %Better for Visualization
-axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
+%axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
 hold off
 
 
