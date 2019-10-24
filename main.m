@@ -151,6 +151,9 @@ hold off
 
 %Do you guys have a better way to do this?
 
+RI = zeros(3,100);
+RC = zeros(3,100);
+
 %Add Normal Distribution to computer possible errors
 figure(3)
 
@@ -167,12 +170,14 @@ for i = 1:100
     n = 3;
     r_error = r_min+rand(1,n)*(r_max-r_min);
     
-    v_min = -2.0;
-    v_max = 2.0;
+    v_min = -0.1;
+    v_max = 0.1;
     n = 3;
     v_error = v_min+rand(1,n)*(v_max-v_min);
     
     [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
+    
+    RI(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
     hold on
@@ -195,12 +200,14 @@ for i = 1:100
     n = 3;
     r_error = r_min+rand(1,n)*(r_max-r_min);
     
-    v_min = -2.0;
-    v_max = 2.0;
+    v_min = -0.1;
+    v_max = 0.1;
     n = 3;
     v_error = v_min+rand(1,n)*(v_max-v_min);
     
     [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
+    
+    RC(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
     hold on
@@ -210,7 +217,7 @@ end
 
 
 %Why is the legend not doing the right color?
-legend([{'I-Orbit'},{'C-Orbit'}])
+legend({'I-Orbit','C-Orbit'})
 xlabel('I distance (km)')
 ylabel('J distance (km)')
 zlabel('K distance (km)')
@@ -221,6 +228,33 @@ axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
 hold off
 
 
+%Matrix contains all the distances
+
+AM= zeros(100,100);
+for i=1:100
+    for c=1:100
+        AM(c,i)=norm(RI(:,i)-RC(:,c));
+    end
+end
+minAM = min(AM,[],[1 2]);
+maxAM = max(AM,[],[1 2]);
+app_range = (maxAM-minAM)/50;                        %gives the intervals
+app_num = zeros(1,51);
+for n=0:50
+    interval(n+1,1) = minAM+n*app_range;
+    for i=1:100
+        for c=1:100
+            if minAM+n*app_range <= AM(i,c) && AM(i,c)< minAM+(n+1)*app_range
+                app_num(1,n+1) = app_num(1,n+1)+1;
+            end
+        end
+    end
+end
+figure(4)
+bar(interval,app_num);
+xlabel('Approach distance (km)')
+ylabel('Number of approaches')
+title('Distribution of approach distance for 100 samples per orbit each')
 %%
 %[r0, v0, oe0, rf, vf, oef] = LaplaceAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
