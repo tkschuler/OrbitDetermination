@@ -10,7 +10,7 @@
 %   -Add TOF functionality
 %   -Do the same method for Laplace and see if we get the same solutions
 %
-% Last modified:   10/22/2019   T. Schuler
+% Last modified:   10/23/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ rho = rho'/1000
 JD_Prop = 2454873.2055555555; %Final Julian Date to Propagate to
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
-%{
+
 OrbitViz(r0,v0)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_C,alt,rho,ra_C,dec_C,JD_C,JD_Prop)
@@ -127,21 +127,20 @@ figure(2)
 t0 = JD_I(2,1)
 tf = JD_Prop
 
+fprintf('Calculating I Error Distribution...\n');
     
 for i = 1:100
     r_min = -2.0;
     r_max = 2.0;
     n = 3;
-    r_error = r_min+rand(1,n)*(r_max-r_min)
+    r_error = r_min+rand(1,n)*(r_max-r_min);
     
     v_min = -2.0;
     v_max = 2.0;
     n = 3;
-    v_error = v_min+rand(1,n)*(v_max-v_min)
+    v_error = v_min+rand(1,n)*(v_max-v_min);
     
     [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
-    
-    fprintf('I Error point calculation: %i.\n', i);
     
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
     hold on
@@ -155,21 +154,21 @@ end
 t0 = JD_C(2,1)
 tf = JD_Prop
 
+fprintf('Calculating C Error Distribution... \n');
+
 for i = 1:100
     
     r_min = -2.0;
     r_max = 2.0;
     n = 3;
-    r_error = r_min+rand(1,n)*(r_max-r_min)
+    r_error = r_min+rand(1,n)*(r_max-r_min);
     
     v_min = -2.0;
     v_max = 2.0;
     n = 3;
-    v_error = v_min+rand(1,n)*(v_max-v_min)
+    v_error = v_min+rand(1,n)*(v_max-v_min);
     
     [rf, vf, oef] = OrbitPropagation(r0.*r_error',v0.*v_error',t0,tf);
-    
-    fprintf('C Error point calculation: %i.\n', i);
     
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
     hold on
@@ -187,6 +186,10 @@ title('3 Sigma Distribution of Two Overlapping Orbits')
 
 %Better for Visualization
 axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
-%}
+
+
+%%
+%[r0, v0, oe0, rf, vf, oef] = LaplaceAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
+
 
 

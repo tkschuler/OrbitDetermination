@@ -23,7 +23,7 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/22/2019   T. Schuler
+% Last modified:   10/23/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -49,14 +49,7 @@ for i = 1:3
     rsite_eci(i,3) = sind(lat);
 end
 rsite_eci = rsite_eci'*(RE+alt)
-
-% Line of Site Vectors
-for i = 1:3
-    L(i,1) = cosd(dec(i,1))*cosd(ra(i,1));
-    L(i,2) = cosd(dec(i,1))*sind(ra(i,1));
-    L(i,3) = sind(dec(i,1));
-end
-
+L
 L = L'
 
 % Parameters for finding middle range magnitude
@@ -111,20 +104,24 @@ oe0 = [a; e; i; Omega; omega; f];
 %% Iterate to get better solution
 
 %Test Variables from Vallado
+%RE = 6378.1363
+%TU = sqrt(RE^3/mu) %time unit page 95 of Vallado
 %r1 = [.117100; .970064; 1.324052] * RE;
 %r2 = [-.078197; 0.370474; 1.574681] * RE;
 %r3 = [-1.431677; -0.347732; 1.321131]* RE;
-%v2 = [-.583968 -.510942 -.022494];
+%v2 = [-.583968 -.510942 -.022494] *RE/TU
 
 %From LEcture 10 slides
-r1 = [8004.7213; 2812.9960; 5408.8835]
-r2 = [6313.3958; 5247.5237; 6467.7250]
-r2 = [5272.0417; 6321.1254; 6810.4754]
+%r1 = [8004.7213; 2812.9960; 5408.8835]
+%r2 = [6313.3958; 5247.5237; 6467.7250]
+%r3 = [5272.0417; 6321.1254; 6810.4754]
 
 %r1 = [8004.7213; 6313.3958; 5272.0417];
 %r2 = [2812.9960; 5247.5237; 6321.1254];
 %r3 = [5408.8835; 6467.7250; 6810.4754];
 
+
+%% ITERATION CURRENTLY ISN'T WORKING
 h = norm(cross(r2,v2))
 p = h^2/mu
 
@@ -139,23 +136,6 @@ g3= (norm(r3)*norm(r2)*sind(df32))/(sqrt(mu*p))
 
 c1 = g3/(f1*g3-f3*g1)
 c3 = -g1/(f1*g3-f3*g1)
-
-%How to iterate???
-%{
-while (abs(F) > 1*10^-9)
-    F = E2-e*sin(E2)-M2; %Eq. 4.51 to test if E2 is a solution (or root)
-    G = 1-e*cos(E2); %Derrivative of F
-    E2 = E2 -(F/G); %Newton's Method
-    
-    f1 = 1-
-    
-    fprintf('No. of Iterations : %d\n',i);
-    i= i+1;
-end
-%}
-
-
-%TO DO ...
 
 %% Orbit Determination
 t0 = JD(2,1)
