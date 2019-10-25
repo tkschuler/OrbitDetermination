@@ -92,10 +92,10 @@ lst_C(3,1) = 33.412047985644;
 
 %% Convert Latitude, Longitude, Altitude to r_site ECEF vector
 
-Re = 6378.1366          %km
-lat = 32.2227       	%degrees
-lon = -110.0101     	%degrees
-alt = 0.757         	%km
+Re = 6378.1366;         %km
+lat = 32.2227;       	%degrees
+lon = -110.0101;     	%degrees
+alt = 0.757;         	%km
 
 %lla = [lat lon alt];
 %rho = lla2ecef(lla);

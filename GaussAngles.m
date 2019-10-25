@@ -29,9 +29,9 @@
 
 function [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,alt,rho,ra,dec,JD,JD_Prop)
 
-mu=  398600.4354             % km^3/s^2  Earth's Gravitational Constant
+mu=  398600.4354;            % km^3/s^2  Earth's Gravitational Constant
 RE = 6378.1366;              % km        Earth Radius
-omega_E = 7.2921159e-5       % rad/s     Earth's intertial Rotation Rate
+omega_E = 7.2921159e-5;      % rad/s     Earth's intertial Rotation Rate
 
 T1 = (JD(1,1)-JD(2,1))*24*60*60
 T3 = (JD(3,1)-JD(2,1))*24*60*60
@@ -62,8 +62,8 @@ a3u = (-T1*((T3-T1)^2-T1^2))/(6*(T3-T1))
 % Determine Parameters for use in eigth-degree equation
 M = inv(L)*rsite_eci;
 
-d1 = M(2,1)*a1-M(2,2)+M(2,3)*a3 %km
-d2 = M(2,1)*a1u-M(2,2)+M(2,3)*a3u
+d1 = M(2,1)*a1-M(2,2)+M(2,3)*a3     %km
+d2 = M(2,1)*a1u+M(2,3)*a3u          %km s^2
 L2 = L(:,2)
 r_site_2 = rsite_eci(:,2)
 C = L2'*r_site_2
@@ -71,8 +71,8 @@ C = L2'*r_site_2
 %Solve for roots of 8th degree polynomial
 eq_8 = [1 0 -(d1^2+2*C*d1+r_site_2'*r_site_2) 0 0 -2*mu*(C*d2+d1*d2) 0 0 -mu^2*d2^2]
 r2 = roots(eq_8);
-r2 = r2(real(r2)>0&imag(r2)==0) %hopefully there's only one real root.
-u= mu/r2^3
+r2 = r2(real(r2)>0&imag(r2)==0)     %hopefully there's only one real root.
+u= mu/r2^3                          % 1/s^2
 
 %Find ci coefficients
 ci_coefficients = [-a1-a1u*u; 1; -a3-a3u*u]*-1
@@ -92,8 +92,8 @@ r3 = rho(3,1)*L(:,3)+rsite_eci(:,3)
 r = [r1 r2 r3]'
 
 %% Use Gibbs method to solve for velocity
-v2 = GIBBS(r1,r2,r3)
-
+%v2 = GIBBS(r1,r2,r3)
+v2 = HGIBBS(r1,r2,r3,JD);
 r0 = r2;
 v0 = v2;
 
@@ -103,13 +103,13 @@ oe0 = [a; e; i; Omega; omega; f];
 
 %% Iterate to get better solution
 
-%Test Variables from Vallado
-%RE = 6378.1363
-%TU = sqrt(RE^3/mu) %time unit page 95 of Vallado
-%r1 = [.117100; .970064; 1.324052] * RE;
-%r2 = [-.078197; 0.370474; 1.574681] * RE;
-%r3 = [-1.431677; -0.347732; 1.321131]* RE;
-%v2 = [-.583968 -.510942 -.022494] *RE/TU
+% Test Variables from Vallado
+% RE = 6378.1363
+% TU = sqrt(RE^3/mu) %time unit page 95 of Vallado
+% r1 = [.117100; .970064; 1.324052] * RE;
+% r2 = [-.078197; 0.370474; 1.574681] * RE;
+% r3 = [-1.431677; -0.347732; 1.321131]* RE;
+% v2 = [-.583968 -.510942 -.022494] *RE/TU
 
 %From LEcture 10 slides
 %r1 = [8004.7213; 2812.9960; 5408.8835]
