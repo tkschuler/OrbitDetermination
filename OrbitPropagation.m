@@ -23,10 +23,7 @@
 
 function [rf, vf, oef] = OrbitPropagation(r0,v0,t0,tf)
 
-%FOR NOW....
-%t0 = 0;
-%tf = 1;
-dt = .01; %intervals
+dt = 500; %intervals
 time_span = [t0:dt:tf];
 
 %r0= [-6796; 4025; 3490]; 
@@ -59,16 +56,6 @@ vf = [vx(size(vx,1),:,1); vy(size(vy,1),:,1); vz(size(vz,1),:,1)];
 
 [a,e,i,Omega,omega,f] = OrbitalElements(rf,vf);
 oef = [a; e; i; Omega; omega; f];
-
-% %Plot Orbits for time durration
-%{
-figure(1)
-plot3(x,y,z,'Color', rand(1,3),'Linewidth',2);
-hold on;
-[ex, ey, ez] = sphere(25)
-surf(ex*RE,ey*RE,ez*RE);
-axis equal
-%}
 
 %% Helper function: 2 Body Kepelerian Dynamic Equation
 

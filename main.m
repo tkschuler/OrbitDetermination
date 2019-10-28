@@ -4,13 +4,8 @@
 %
 %  this script takes 3 satellite observations from a site on earth and 
 %  and determines the orbit of the satellite using Gauss
-% 
-%  TODO:
-%   -Iterate for Gauss to find better solution
-%   -Add TOF functionality
-%   -Do the same method for Laplace and see if we get the same solutions
 %
-% Last modified:   10/23/2019   T. Schuler
+% Last modified:   10/28/2019   J. Hammes
 % 
 % -------------------------------------------------------------------------
 
@@ -99,42 +94,42 @@ alt = 0.757;         	%km
 
 %lla = [lat lon alt];
 %rho = lla2ecef(lla);
-rho = [(Re+alt)*cosd(lat)*cosd(lon) (Re+alt)*cosd(lat)*sind(lon) (Re+alt)*sind(lon)]
-rho = rho'/1000 
+rho = [(Re+alt)*cosd(lat)*cosd(lon) (Re+alt)*cosd(lat)*sind(lon) (Re+alt)*sind(lon)];
+rho = rho'/1000; 
 
 
 %% Orbit Determination & Visualization
 JD_Prop = 2454873.2055555555; %Final Julian Date to Propagate to
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
-
-dt = datetime(JD_I(2,1),'convertfrom','juliandate')
+rfI = rf;
+dt = datetime(JD_I(2,1),'convertfrom','juliandate');
 [Y,M,D] = ymd(dt);
 [h,m,s] = hms(dt);
-utc1 = [Y M D h m s]
-o1_I = eci2lla(r0',utc1)
+utc1 = [Y M D h m s];
+o1_I = eci2lla(r0',utc1);
 
-dt2 = datetime(JD_Prop,'convertfrom','juliandate')
+dt2 = datetime(JD_Prop,'convertfrom','juliandate');
 [Y,M,D] = ymd(dt2);
 [h,m,s] = hms(dt2);
-utc2 = [Y M D h m s]
-o2_I = eci2lla(rf',utc2)
+utc2 = [Y M D h m s];
+o2_I = eci2lla(rf',utc2);
 
 
 OrbitViz(r0,v0)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_C,alt,rho,ra_C,dec_C,JD_C,JD_Prop)
-
-dt = datetime(JD_C(2,1),'convertfrom','juliandate')
+rfC = rf;
+dt = datetime(JD_C(2,1),'convertfrom','juliandate');
 [Y,M,D] = ymd(dt);
 [h,m,s] = hms(dt);
-utc1 = [Y M D h m s]
-o1_C = eci2lla(r0',utc1)
+utc1 = [Y M D h m s];
+o1_C = eci2lla(r0',utc1);
 
-dt2 = datetime(JD_Prop,'convertfrom','juliandate')
+dt2 = datetime(JD_Prop,'convertfrom','juliandate');
 [Y,M,D] = ymd(dt2);
 [h,m,s] = hms(dt2);
-utc2 = [Y M D h m s]
-o2_C = eci2lla(rf',utc2)
+utc2 = [Y M D h m s];
+o2_C = eci2lla(rf',utc2);
 
 OrbitViz(r0,v0)
 
@@ -145,38 +140,41 @@ geoplot([o1_I(1) o2_I(1)],[o1_I(2) o2_I(2)],'g-*')
 hold on
 geoplot([o1_C(1) o2_C(1)],[o1_C(2) o2_C(2)],'b-*')
 hold off
-
+NominalDistance = norm(rfI-rfC)
 
 %% Gauss Distribution
-
-%Do you guys have a better way to do this?
 
 RI = zeros(3,100);
 RC = zeros(3,100);
 
+%% ODE Propagation
 %Add Normal Distribution to computer possible errors
 figure(3)
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
-t0 = JD_I(2,1)
-tf = JD_Prop
+t0 = JD_I(2,1)*24*60*60;
+tf = JD_Prop*24*60*60;
 
 fprintf('Calculating I Error Distribution...\n');
     
 for i = 1:100
+    
+    p = 3; %3 sigma
+
     r_min = -2.0;
     r_max = 2.0;
-    n = 3;
-    r_error = r_min+rand(1,n)*(r_max-r_min);
+    n=3; %size of array to generate
+
+    r_error = r_min + (r_max - r_min)*sum(rand(n,p),1)/p;
     
     v_min = -0.1;
     v_max = 0.1;
     n = 3;
-    v_error = v_min+rand(1,n)*(v_max-v_min);
+    v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
-    [rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
-    
+    [rf, vf, oef] = KeplerPropagation(r0+r_error',v0+v_error',t0,tf,oe0);
+    %[rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     RI(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
@@ -189,25 +187,28 @@ end
 
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_C,alt,rho,ra_C,dec_C,JD_C,JD_Prop)
     
-t0 = JD_C(2,1)
-tf = JD_Prop
+t0 = JD_C(2,1)*24*60*60;
+tf = JD_Prop*24*60*60;
 
 fprintf('Calculating C Error Distribution... \n');
 
 for i = 1:100
     
+    p = 3; %3 sigma
+
     r_min = -2.0;
     r_max = 2.0;
-    n = 3;
-    r_error = r_min+rand(1,n)*(r_max-r_min);
+    n=3; %size of array to generate
+
+    r_error = r_min + (r_max - r_min)*sum(rand(n,p),1)/p;
     
     v_min = -0.1;
     v_max = 0.1;
     n = 3;
-    v_error = v_min+rand(1,n)*(v_max-v_min);
+    v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
-    [rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
-    
+    [rf, vf, oef] = KeplerPropagation(r0+r_error',v0+v_error',t0,tf,oe0);
+    %[rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     RC(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
@@ -215,7 +216,6 @@ for i = 1:100
     grid on
     
 end
-
 
 %Why is the legend not doing the right color?
 legend({'I-Orbit','C-Orbit'})
@@ -225,9 +225,7 @@ zlabel('K distance (km)')
 title('3 Sigma Distribution of Two Overlapping Orbits')
 
 %Better for Visualization
-%axis([-3e4 3e4 -3e4 3e4 -3e4 3e4])
 hold off
-
 
 %Matrix contains all the distances
 
@@ -256,34 +254,3 @@ bar(interval,app_num);
 xlabel('Approach distance (km)')
 ylabel('Number of approaches')
 title('Distribution of approach distance for 100 samples per orbit each')
-%%
-%[r0, v0, oe0, rf, vf, oef] = LaplaceAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
-
-
-%% Site Visualization
-
-%{
-states = geoshape(shaperead('usastatehi', 'UseGeoCoords', true));
-oceanColor = [.5 .7 .9];
-
-%This won't work if you don't have the mapping toolbox
-stateName = 'Arizona';
-ma = states(strcmp(states.Name, stateName));
-
-figure
-ax = usamap('az');
-setm(ax, 'FFaceColor', oceanColor)
-geoshow(states)
-geoshow(ma, 'LineWidth', 1.5, 'FaceColor', [.5 .8 .6])
-%geoshow(placenames);
-%geoshow(route.Latitude, route.Longitude);
-geoshow(32.2226,-110.9747)
-title({'Arizona and Surrounding Region', 'Placenames and Route'})
-
-figure
-latSeattle = 47.62;
-lonSeattle = -122.33;
-latAnchorage = 61.20;
-lonAnchorage = -149.9;
-
-%}
