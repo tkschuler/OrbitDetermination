@@ -101,10 +101,10 @@ for i = 1:100
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
 
     %Kepler Propagation
-    %[rf, vf, oef] = KeplerPropagation(r0_I'+r_error,v0_I'+v_error,t0,tf);
+    [rf, vf, oef] = KeplerPropagation(r0_I'+r_error,v0_I'+v_error,t0,tf);
     
     %ode45 Propagation
-    [rf, vf, oef] = ode45_Propagation(r0_I+r_error',v0_I+v_error',t0,tf);
+    %[rf, vf, oef] = ode45_Propagation(r0_I+r_error',v0_I+v_error',t0,tf);
     
     RI(:,i)=rf;
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
@@ -136,10 +136,10 @@ for i = 1:100
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
     %Kepler Propagation
-    %[rf, vf, oef] = KeplerPropagation(r0_C'+r_error,v0_C'+v_error,t0,tf);
+    [rf, vf, oef] = KeplerPropagation(r0_C'+r_error,v0_C'+v_error,t0,tf);
     
     %ode45 Propagation
-    [rf, vf, oef] = ode45_Propagation(r0_C+r_error',v0_C+v_error',t0,tf);
+    %[rf, vf, oef] = ode45_Propagation(r0_C+r_error',v0_C+v_error',t0,tf);
     
     RC(:,i)=rf;
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
