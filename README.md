@@ -6,7 +6,7 @@
 
 ## Overview
 
-This project was to determine the six kepelerian orbital elements of a satellite's from 3 intial angle-only observations. We also propagate the sattelite's orbit forward in time using both ode45 and kepelerian methods. 
+This project was to determine the six Keplerian orbital elements of a satellite's from 3 initial angle-only observations. We also propagate the satelite's orbit forward in time using ODE45, but we included the Keplerian method of propogation since it is discussed in the report. 
 
 ### Running
 
