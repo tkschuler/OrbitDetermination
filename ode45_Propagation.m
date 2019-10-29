@@ -2,7 +2,7 @@
 %
 %  OrbitPropagation.m
 %
-%  this function propagates an orbit forward in time using ode45 given an intial
+%  this function uses ode45 to propagate an orbit forward in time using ode45 given an intial
 %  position and velocity.  This function also plots the orbit
 % 
 %  inputs:
@@ -16,18 +16,15 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/21/2019   T. Schuler
+% Last modified:   10/28/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
 
-function [rf, vf, oef] = OrbitPropagation(r0,v0,t0,tf)
+function [rf, vf, oef] = ode45_Propagation(r0,v0,t0,tf)
 
 dt = 1000; %intervals
 time_span = [t0:dt:tf];
-
-%r0= [-6796; 4025; 3490]; 
-%v0 = [-3.7817; -6.0146; 1.1418];
 
 mu= 3.986004254*10^5;    %           Earth's Gravitational Constant
 RE = 6378.137;           % km         Earth Radius
@@ -51,13 +48,10 @@ vz= Xt(:,6);
 rf = [x(size(x,1),:,1); y(size(y,1),:,1); z(size(z,1),:,1)];
 vf = [vx(size(vx,1),:,1); vy(size(vy,1),:,1); vz(size(vz,1),:,1)];
 
-%Determine new orbital elements.  Only True anomaly should change for an
-%orbit propagation 
-
 [a,e,i,Omega,omega,f] = OrbitalElements(rf,vf);
 oef = [a; e; i; Omega; omega; f];
 
-%% Helper function: 2 Body Kepelerian Dynamic Equation
+%% 2-Body Kepelerian Dynamic Equation
 
 function [dx] = dynEq(T, X , mu)
 
@@ -69,6 +63,5 @@ function [dx] = dynEq(T, X , mu)
 
     dx = [vx; vy; vz; -((mu/r^3)*x); -((mu/r^3)*y); -((mu/r^3)*z)];
 end
-
 
 end

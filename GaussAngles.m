@@ -23,7 +23,7 @@
 %    vf       - 3x1 vector of final velocity of satellite in ECI            km/s
 %    oef      - 6x1 vector of final classical orbital elements
 %
-% Last modified:   10/23/2019   T. Schuler
+% Last modified:   10/28/2019   T. Schuler
 % 
 % -------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ r1 = rho(1,1)*L(:,1)+rsite_eci(:,1);
 r2 = rho(2,1)*L(:,2)+rsite_eci(:,2);
 r3 = rho(3,1)*L(:,3)+rsite_eci(:,3);
 
-r_initial = [r1 r2 r3]
+rf_initial = [r1 r2 r3];
 
 %% Use Gibbs method to solve for velocity
 alpha_12 = acosd(dot(r1,r2)/(norm(r1)*norm(r2)));           % get angles between position vectors
@@ -104,41 +104,39 @@ v0 = v2;
 %% ITERATION 
 it = 1;
 rho_old = rho*1.1;
-while norm(rho_old-rho)>0.005                           % iterates until the position vector is within 5m                            
-r1 = rho(1,1)*L(:,1)+rsite_eci(:,1);
-r2 = rho(2,1)*L(:,2)+rsite_eci(:,2);
-r3 = rho(3,1)*L(:,3)+rsite_eci(:,3);
+while norm(rho_old-rho)>0.005                               % iterates until the position vector is within 5m                            
+    r1 = rho(1,1)*L(:,1)+rsite_eci(:,1);
+    r2 = rho(2,1)*L(:,2)+rsite_eci(:,2);
+    r3 = rho(3,1)*L(:,3)+rsite_eci(:,3);
 
-df12 = acosd(dot(r1,r2)/(norm(r1)*norm(r2)));           % get angles between position vectors
-df23 = acosd(dot(r2,r3)/(norm(r2)*norm(r3)));
-if df12> 1 && df23 > 1                                  % choose appropriate method for velocity
-v2 = GIBBS(r1,r2,r3);
-else
-v2 = HGIBBS(r1,r2,r3,JD);
+    df12 = acosd(dot(r1,r2)/(norm(r1)*norm(r2)));           % get angles between position vectors
+    df23 = acosd(dot(r2,r3)/(norm(r2)*norm(r3)));
+    if df12> 1 && df23 > 1                                  % choose appropriate method for velocity
+        v2 = GIBBS(r1,r2,r3);
+    else
+        v2 = HGIBBS(r1,r2,r3,JD);
+    end
+
+    h = norm(cross(r2,v2));
+    p = h^2/mu;
+
+    f1 = 1-(norm(r1)/p)*(1-cosd(-df12));
+    f3 = 1-(norm(r3)/p)*(1-cosd(df23));
+
+    g1= (norm(r1)*norm(r2)*sind(-df12))/(sqrt(mu*p));
+    g3= (norm(r3)*norm(r2)*sind(df23))/(sqrt(mu*p));
+
+    c1 = g3/(f1*g3-f3*g1);
+    c3 = -g1/(f1*g3-f3*g1);
+    rho_old = rho;
+    ci_coefficients = [c1; -1; c3];
+    rho = M*(ci_coefficients*-1);
+    rho(1,1) = rho(1,1)/ci_coefficients(1,1);
+    rho(2,1) = rho(2,1)/ci_coefficients(2,1);
+    rho(3,1) = rho(3,1)/ci_coefficients(3,1);
+    it = it+1;
 end
-
-h = norm(cross(r2,v2));
-p = h^2/mu;
-
-f1 = 1-(norm(r1)/p)*(1-cosd(-df12));
-f3 = 1-(norm(r3)/p)*(1-cosd(df23));
-
-g1= (norm(r1)*norm(r2)*sind(-df12))/(sqrt(mu*p));
-g3= (norm(r3)*norm(r2)*sind(df23))/(sqrt(mu*p));
-
-c1 = g3/(f1*g3-f3*g1);
-c3 = -g1/(f1*g3-f3*g1);
-rho_old = rho;
-ci_coefficients = [c1; -1; c3];
-rho = M*(ci_coefficients*-1);
-rho(1,1) = rho(1,1)/ci_coefficients(1,1);
-rho(2,1) = rho(2,1)/ci_coefficients(2,1);
-rho(3,1) = rho(3,1)/ci_coefficients(3,1);
-it = it+1;
-end
-r_iterated = [r1 r2 r3]
-r0=r2;
-v0=v2;
+rf_iterated = [r1 r2 r3];
 
 %% Determine classical orbital elements of this orbit
 [a,e,i,Omega,omega,f] = OrbitalElements(r2,v2);
@@ -152,6 +150,45 @@ tf = JD_Prop*24*60*60;
 
 %% Orbit Determination Kepler
 
-[rf, vf, oef] = KeplerPropagation(r0,v0,t0,tf);
+[rf, vf, oef] = KeplerPropagation(r2,v2,t0,tf);
+
+%% Pretty Format everything to console
+fprintf(' Without iterative improvement...')
+fprintf('\n r_i (km)                        = [%g, %g, %g]', ...
+                                   rf_initial(1), rf_initial(2), rf_initial(3))
+fprintf('\n v_i (km/s)                      = [%g, %g, %g]', ...
+                                   v0(1), v0(2), v0(3))
+fprintf('\n');
+
+cprintf('*black',' No. of iterations: %d \n',it)
+fprintf(' With iterative improvement...')
+fprintf('\n r_i (km)                        = [%g, %g, %g]', ...
+                                   rf_iterated(1), rf_iterated(2), rf_iterated(3))
+fprintf('\n v_i (km/s)                      = [%g, %g, %g]', ...
+                                   v2(1), v2(2), v2(3))
+fprintf('\n');
+
+fprintf('\n   Semimajor axis                = %g    km', oe0(1))
+fprintf('\n   Eccentricity                  = %g', oef(2))
+fprintf('\n   Inclination                   = %g    deg', oe0(3))
+fprintf('\n   RA of ascending node          = %g    deg', oe0(4))
+fprintf('\n   Argument of perigee           = %g    deg', oe0(5))
+fprintf('\n   True anomaly                  = %g    deg', oe0(6))
+
+T = 2*pi/sqrt(mu)*oef(1)^1.5; 
+    fprintf('\n   Period:')
+    fprintf('\n                                 = %g    s', T)
+
+fprintf('\n');
+
+fprintf(' Propagation to new time...')
+fprintf('\n r_f (km)                        = [%g, %g, %g]', ...
+                                   rf(1), rf(2), rf(3))
+fprintf('\n v_f (km/s)                      = [%g, %g, %g]', ...
+                                   vf(1), vf(2), vf(3))
+fprintf('\n   True anomaly                  = %g    deg', oef(6))
+
+fprintf('\n-----------------------------------------------------------------------------------------------------\n')
+
 
 end

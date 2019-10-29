@@ -52,7 +52,7 @@
 % Select: 'Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune', or 'Pluto'
 
 function m = OrbitViz(r0,v0)
-    Orbit_Body = 'Earth'
+    Orbit_Body = 'Earth';
     %% Orbit Body Parameters:
 
     % Associate proper orbital environmental parameters
@@ -158,13 +158,10 @@ function m = OrbitViz(r0,v0)
     
     
     Px = r0(1); Py = r0(2); Pz= r0(3);
-    Vx = v0(1); Vy = v0(2); Vz= v0(3);
-    
-    
-    
+    Vx = v0(1); Vy = v0(2); Vz= v0(3); 
 
-    Position = [Px;Py;Pz] % form column vector for position
-    Velocity = [Vx;Vy;Vz] % form column vector for velocity
+    Position = [Px;Py;Pz]; % form column vector for position
+    Velocity = [Vx;Vy;Vz]; % form column vector for velocity
     %% Determine Orbital Elements
     %% Find Angular Momentum:
     % We can determine the angular momentum vector $\vec{h} =\vec{r} \times \vec{\dot{r} 
@@ -175,7 +172,7 @@ function m = OrbitViz(r0,v0)
 
     % find angular momentum km^2/s
     hVec = cross(Position,Velocity); % vector
-    h = norm(hVec) % magnitude
+    h = norm(hVec); % magnitude
     %% 
     %% Find Orbit Eccentricity:
     % We can determine the eccentricity vector $\vec{e} =\frac{\vec{r} \times \vec{h} 
@@ -189,9 +186,9 @@ function m = OrbitViz(r0,v0)
     % respectively.
 
     % find eccentricity
-    r = norm(Position) % magnitude
+    r = norm(Position); % magnitude
     eVec = (cross(Velocity,hVec)/u) - (Position/r); % vector
-    e = norm(eVec) % magnitude
+    e = norm(eVec); % magnitude
     %% 
     %% Find Semi-major Axis of orbit:
     % The semi-major axis of any conic section can be be expressed as $a=\frac{h^2 
@@ -203,7 +200,7 @@ function m = OrbitViz(r0,v0)
     % conic section orbits and their respective eccentricities.
 
     % find semi-major axis in km
-    a = h^2/(u*(1-e^2))
+    a = h^2/(u*(1-e^2));
     %% Numerically Integrate Using Linear A State Space Model:
     % Our system can be designed using a linear state-space representation model 
     % and numerically integrated using a brute-force <https://en.wikipedia.org/wiki/Orbit_modeling#Cowell's_method 
@@ -283,7 +280,7 @@ function m = OrbitViz(r0,v0)
     % about the time step at which to integrate. As the time step decreases, the simulation 
     % will take longer to run! Keep this in mind when preparing your simulation!_)
 
-    Norbits = 1 % Control slider that will specify number or orbits to propagate (only matters in a perturbed circular or elliptical orbit)
+    Norbits = 1; % Control slider that will specify number or orbits to propagate (only matters in a perturbed circular or elliptical orbit)
     % Create a function to handle the calculation of the time of flight
     [T,Orbit] = Get_TOF(a,u,e,Body_Mass,Dist_to_Sun,Norbits);
     % develop a time interval
@@ -330,8 +327,8 @@ function m = OrbitViz(r0,v0)
     %figure;
     plot3(States_X,States_Y,States_Z,'Color', rand(1,3));
     grid on;
-    title_form = sprintf('%s Trajectory About %s',Orbit,Body); % make the title unique to the orbit body and conic section
-    title(title_form);
+    %title_form = sprintf('%s Trajectory About %s',Orbit,Body); % make the title unique to the orbit body and conic section
+    title('I and C Orbits');
     xlabel('X(km)');
     ylabel('Y(km)');
     zlabel('Z(km)');
