@@ -93,6 +93,7 @@ rf_initial = [r1 r2 r3];
 %% Use Gibbs method to solve for velocity
 alpha_12 = acosd(dot(r1,r2)/(norm(r1)*norm(r2)));           % get angles between position vectors
 alpha_23 = acosd(dot(r2,r3)/(norm(r2)*norm(r3)));
+
 if alpha_12> 1 && alpha_23 > 1                              % choose appropriate method for velocity
 v2 = GIBBS(r1,r2,r3);
 else
@@ -146,7 +147,7 @@ oe0 = [a; e; i; Omega; omega; f];
 t0 = JD(2,1)*24*60*60;
 tf = JD_Prop*24*60*60;
 
-%[rf, vf, oef] = OrbitPropagation(r0, v0, t0, tf)
+%[rf, vf, oef] = OrbitPropagation(r0, v0, t0, tf);
 
 %% Orbit Determination Kepler
 

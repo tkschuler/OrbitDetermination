@@ -79,7 +79,7 @@ hold off;
 
 
 %% Gauss 3-Sigma Orbit Propagation (n=100)
-%Comment out the line to do either kepeler propagation or ode45 propagation
+%Comment out the line to do either Kepler propagation or ode45 propagation
 figure(2)
 tf = JD_Prop*24*60*60;
 
@@ -100,12 +100,13 @@ for i = 1:100
     n = 3;
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
 
-    %Kepeler Propagation
+    %Kepler Propagation
     %[rf, vf, oef] = KeplerPropagation(r0_I'+r_error,v0_I'+v_error,t0,tf);
+    
     %ode45 Propagation
     [rf, vf, oef] = ode45_Propagation(r0_I+r_error',v0_I+v_error',t0,tf);
-    RI(:,i)=rf;
     
+    RI(:,i)=rf;
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
     hold on
     %grid on
@@ -134,12 +135,13 @@ for i = 1:100
     n = 3;
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
-    %Kepeler Propagation
+    %Kepler Propagation
     %[rf, vf, oef] = KeplerPropagation(r0_C'+r_error,v0_C'+v_error,t0,tf);
+    
     %ode45 Propagation
     [rf, vf, oef] = ode45_Propagation(r0_C+r_error',v0_C+v_error',t0,tf);
-    RC(:,i)=rf;
     
+    RC(:,i)=rf;
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
     hold on
     grid on
@@ -165,6 +167,7 @@ for i=1:100
 end
 minAM = min(AM,[],[1 2]);
 maxAM = max(AM,[],[1 2]);
+fprintf('The minimal found approach distance is: %g [km]',minAM)
 app_range = (maxAM-minAM)/50;                        %gives the intervals
 app_num = zeros(1,51);
 for n=0:50
