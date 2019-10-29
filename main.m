@@ -77,6 +77,8 @@ cprintf('*blue','C Group Orbit Determination and Propagation\n\n');
 OrbitViz(r0_C,v0_C)
 hold off;
 
+nominal_distance = norm(rf_I-rf_C);
+fprintf('The distance between the satellites at the final epoch is %g [km]\n',nominal_distance)
 
 %% Gauss 3-Sigma Orbit Propagation (n=100)
 %Comment out the line to do either Kepler propagation or ode45 propagation
