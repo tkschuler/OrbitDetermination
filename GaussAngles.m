@@ -2,7 +2,7 @@
 %
 %  GaussAngles.m
 %
-%  this function uses the Gauss angles only method to find the kepelerian
+%  this function uses the Gauss Angles Only method to find the Keplerian
 %  elements of the orbit
 % 
 %  inputs:
@@ -31,10 +31,10 @@ function [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst,alt,rho,ra,dec,JD,JD_P
 
 mu=  398600.4354;            % km^3/s^2  Earth's Gravitational Constant
 RE = 6378.1366;              % km        Earth Radius
-omega_E = 7.2921159e-5;      % rad/s     Earth's intertial Rotation Rate
+omega_E = 7.2921159e-5;      % rad/s     Earth's inertial Rotation Rate
 
-T1 = (JD(1,1)-JD(2,1))*24*60*60;
-T3 = (JD(3,1)-JD(2,1))*24*60*60;
+T1 = (JD(1,1)-JD(2,1))*24*60*60;        % sec
+T3 = (JD(3,1)-JD(2,1))*24*60*60;        % sec
 
 %Line of site Unit Vectors
 for i = 1:3
@@ -58,11 +58,11 @@ a3 = -T1/(T3-T1);
 a1u = (T3*((T3-T1)^2-T3^2))/(6*(T3-T1));
 a3u = (-T1*((T3-T1)^2-T1^2))/(6*(T3-T1));
 
-% Determine Parameters for use in eigth-degree equation
+% Determine Parameters for use in eighth-degree equation
 M = inv(L)*rsite_eci;
 
-d1 = M(2,1)*a1-M(2,2)+M(2,3)*a3;     %km
-d2 = M(2,1)*a1u+M(2,3)*a3u;          %km s^2
+d1 = M(2,1)*a1-M(2,2)+M(2,3)*a3;     % km
+d2 = M(2,1)*a1u+M(2,3)*a3u;          % km*s^2
 L2 = L(:,2);
 r_site_2 = rsite_eci(:,2);
 C = L2'*r_site_2;
@@ -70,7 +70,7 @@ C = L2'*r_site_2;
 %Solve for roots of 8th degree polynomial
 eq_8 = [1 0 -(d1^2+2*C*d1+r_site_2'*r_site_2) 0 0 -2*mu*(C*d2+d1*d2) 0 0 -mu^2*d2^2];
 r2 = roots(eq_8);
-r2 = r2(real(r2)>0&imag(r2)==0);     %hopefully there's only one real root.
+r2 = r2(real(r2)>0&imag(r2)==0);     
 u= mu/r2^3;                          % 1/s^2
 
 %Find ci coefficients

@@ -26,8 +26,8 @@ function [rf, vf, oef] = ode45_Propagation(r0,v0,t0,tf)
 dt = 1000; %intervals
 time_span = [t0:dt:tf];
 
-mu= 3.986004254*10^5;    %           Earth's Gravitational Constant
-RE = 6378.137;           % km         Earth Radius
+mu= 3.986004254*10^5;    % Earth's Gravitational Constant
+RE = 6378.137;           % Earth Radius [km]
 
 ICs = horzcat(r0',v0')';
 
@@ -51,7 +51,7 @@ vf = [vx(size(vx,1),:,1); vy(size(vy,1),:,1); vz(size(vz,1),:,1)];
 [a,e,i,Omega,omega,f] = OrbitalElements(rf,vf);
 oef = [a; e; i; Omega; omega; f];
 
-%% 2-Body Kepelerian Dynamic Equation
+%% 2-Body Keplerian Dynamic Equation
 
 function [dx] = dynEq(T, X , mu)
 

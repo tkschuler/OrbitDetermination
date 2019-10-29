@@ -22,7 +22,7 @@
 
 function v2 = HGIBBS(r1,r2,r3,JD)
 
-mu= 3.986004254*10^5; %Earth's Gravitational Constant
+mu= 3.986004254*10^5; % Earth's Gravitational Constant
 
 t31 = (JD(3,1)-JD(1,1))*24*60*60;
 t32 = (JD(3,1)-JD(2,1))*24*60*60;

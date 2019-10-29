@@ -2,8 +2,8 @@
 %
 %  main.m
 %
-%  this script takes 3 satellite observations from a site on earth and 
-%  and determines the orbit of the satellite using Gauss
+%  this script takes 3 satellite observations from a site on Earth and 
+%  and determines the orbit of the satellite using the Gauss Method
 %
 % Last modified:   10/28/2019   T. Schuler
 % 
@@ -88,8 +88,8 @@ cprintf('*black','Calculating I Error Distribution...\n');
 t0 = JD_I(2,1)*24*60*60;
     
 for i = 1:100
-    %3 Sigma Normal distribution
-    p = 3; %3 sigma
+    %3-Sigma Normal distribution
+    p = 3; %3-sigma
     r_min = -2.0;
     r_max = 2.0;
     n=3; %size of array to generate

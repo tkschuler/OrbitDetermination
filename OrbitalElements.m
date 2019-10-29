@@ -2,7 +2,7 @@
 %
 %  OrbitElements.m
 %
-%  this function calculates the 6 classical keplerian orbital elements from
+%  this function calculates the 6 classical Keplerian orbital elements from
 %  and initial position and velocity in the ijk frame
 % 
 %  inputs:
@@ -22,7 +22,7 @@
 % -------------------------------------------------------------------------
 function [a,e,i,OMEGA,omega,f] = OrbitalElements(r,v)
 
-    mu = 3.986*10^5; %Gravitational Constant
+    mu = 3.986*10^5; %Earth's Gravitational Constant
     E = norm(v)^2/2 - mu/norm(r);
     a = -mu/(2*E);
     e_vec= 1/mu*((norm(v)^2-mu/norm(r))*r -dot(r,v)*v);
@@ -39,7 +39,7 @@ function [a,e,i,OMEGA,omega,f] = OrbitalElements(r,v)
 
     cos_omega = dot(I,n)/norm(n);
     sin_omega = dot(J,n)/norm(n); %Double check Quadrant
-    OMEGA = atan2d(sin_omega,cos_omega);
+    OMEGA = atan2d(sin_omega,cos_omega);    % place in correct Quadrant
     omega = acosd(dot(n,e_vec)/(norm(n)*e));
 
     if e_vec(3) < 0

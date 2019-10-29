@@ -2,7 +2,7 @@
 %
 %  OrbitElements.m
 %
-%  this function uses the kepeler time of flight information to determine
+%  this function uses the Kepler time of flight information to determine
 %  the future true anomaly and the new position and velocity vectors
 % 
 %  inputs:

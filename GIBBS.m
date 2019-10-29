@@ -2,7 +2,7 @@
 %
 %  GIBBS.m
 %
-%  this function uses Gibbs method to determine velocity of sattelite
+%  this function uses Gibbs method to determine velocity of satelite
 %  given 3 observations
 % 
 %  inputs:
@@ -21,8 +21,8 @@
 
 function v2 = GIBBS(r1,r2,r3)
 
-mu= 3.986004254*10^5; %Earth's Gravitational Constant
-ER = 6378.137; %Earth Radius
+mu= 3.986004254*10^5; % Earth's Gravitational Constant
+ER = 6378.137; % Earth Radius
 
 z12 = cross(r1,r2);
 z23 = cross(r2,r3);
