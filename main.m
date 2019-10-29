@@ -154,7 +154,9 @@ figure(3)
 [r0, v0, oe0, rf, vf, oef] = GaussAngles(lat,lst_I,alt,rho,ra_I,dec_I,JD_I,JD_Prop)
 
 t0 = JD_I(2,1)*24*60*60;
-tf = JD_Prop*24*60*60;
+tf = JD_Prop*24*60*60
+
+%tf= juliandate(datetime('2009-02-10 17:15:59'))*24*60*60
 
 fprintf('Calculating I Error Distribution...\n');
     
@@ -173,13 +175,15 @@ for i = 1:100
     n = 3;
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
-    [rf, vf, oef] = KeplerPropagation(r0+r_error',v0+v_error',t0,tf,oe0);
+    
+    [rf, vf, oef] = KeplerPropagation(r0'+r_error,v0'+v_error,t0,tf);
     %[rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     RI(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
     hold on
     %grid on
+    fprintf('Calculating I distribution point... %d \n', i);
 end
 
 
@@ -207,14 +211,14 @@ for i = 1:100
     n = 3;
     v_error = v_min+(v_max-v_min)*sum(rand(n,p),1)/p;
     
-    [rf, vf, oef] = KeplerPropagation(r0+r_error',v0+v_error',t0,tf,oe0);
+    [rf, vf, oef] = KeplerPropagation(r0'+r_error,v0'+v_error,t0,tf);
     %[rf, vf, oef] = OrbitPropagation(r0+r_error',v0+v_error',t0,tf);
     RC(:,i)=rf;
     
     plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
     hold on
     grid on
-    
+    fprintf('Calculating C distribution point... %d \n', i);
 end
 
 %Why is the legend not doing the right color?

@@ -152,6 +152,6 @@ tf = JD_Prop*24*60*60;
 
 %% Orbit Determination Kepler
 
-[rf, vf, oef] = KeplerPropagation(r0,v0,t0,tf,oe0);
+[rf, vf, oef] = KeplerPropagation(r0,v0,t0,tf);
 
 end

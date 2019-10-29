@@ -23,7 +23,7 @@
 
 function [rf, vf, oef] = OrbitPropagation(r0,v0,t0,tf)
 
-dt = 500; %intervals
+dt = 1000; %intervals
 time_span = [t0:dt:tf];
 
 %r0= [-6796; 4025; 3490]; 
