@@ -107,7 +107,7 @@ for i = 1:100
     %[rf, vf, oef] = ode45_Propagation(r0_I+r_error',v0_I+v_error',t0,tf);
     
     RI(:,i)=rf;
-    plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
+    h1 = plot3(rf(1),rf(2),rf(3),'*','Color','r','MarkerSize',4);
     hold on
     %grid on
     fprintf('%d ', i);
@@ -142,14 +142,14 @@ for i = 1:100
     %[rf, vf, oef] = ode45_Propagation(r0_C+r_error',v0_C+v_error',t0,tf);
     
     RC(:,i)=rf;
-    plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
+    h2 = plot3(rf(1),rf(2),rf(3),'*','Color','b','MarkerSize',4);
     hold on
     grid on
     fprintf('%d ', i);
 end
 fprintf('\n');
 
-legend({'I-Orbit','C-Orbit'})
+legend([h1,h2],'I-Orbit','C-Orbit')
 xlabel('I distance (km)')
 ylabel('J distance (km)')
 zlabel('K distance (km)')
