@@ -147,16 +147,16 @@ oe0 = [a; e; i; Omega; omega; f];
 t0 = JD(2,1)*24*60*60;
 tf = JD_Prop*24*60*60;
 
-%[rf, vf, oef] = ode45_Propagation(r2, v2, t0, tf);
+[rf, vf, oef] = ode45_Propagation(r2, v2, t0, tf);
 
 %% Orbit Determination Kepler
 
-[rf, vf, oef] = KeplerPropagation(r2,v2,t0,tf);
+%[rf, vf, oef] = KeplerPropagation(r2,v2,t0,tf);
 
 %% Pretty Format everything to console
 fprintf(' Without iterative improvement...')
 fprintf('\n r_i (km)                        = [%g, %g, %g]', ...
-                                   rf_initial(2,1), rf_initial(2,2), rf_initial(2,3))
+                                   rf_initial(1,2), rf_initial(2,2), rf_initial(3,2))
 fprintf('\n v_i (km/s)                      = [%g, %g, %g]', ...
                                    v0(1), v0(2), v0(3))
 fprintf('\n');
@@ -164,7 +164,7 @@ fprintf('\n');
 cprintf('*black',' No. of iterations: %d \n',it)
 fprintf(' With iterative improvement...')
 fprintf('\n r_i (km)                        = [%g, %g, %g]', ...
-                                   rf_iterated(2,1), rf_iterated(2,2), rf_iterated(2,3))
+                                   rf_iterated(1,2), rf_iterated(2,2), rf_iterated(3,2))
 fprintf('\n v_i (km/s)                      = [%g, %g, %g]', ...
                                    v2(1), v2(2), v2(3))
                             

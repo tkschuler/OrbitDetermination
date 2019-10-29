@@ -186,4 +186,4 @@ bar(interval,app_num);
 xlabel('Approach distance (km)')
 ylabel('Number of approaches')
 title('Distribution of closest approach distance for 100 samples per orbit each')
-
+fprintf('\n');
